@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -14,33 +15,87 @@ import MonthlySummary from "./pages/MonthlySummary";
 import Settlement from "./pages/Settlement";
 import RoomSettings from "./pages/RoomSettings";
 import NotFound from "./pages/NotFound";
+import Help from "./pages/Help"; // Added Help import
+import ProtectedRoute from "./components/ProtectedRoute"; // Assuming ProtectedRoute is a new component
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+function App() { // Changed to function declaration
+  return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/room-setup" element={<RoomSetup />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/add-expense" element={<AddExpense />} />
-            <Route path="/monthly-summary" element={<MonthlySummary />} />
-            <Route path="/settlement" element={<Settlement />} />
-            <Route path="/room-settings" element={<RoomSettings />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <ThemeProvider defaultTheme="light" storageKey="messmate-theme"> {/* Changed ThemeProvider props */}
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+
+              <Route
+                path="/room-setup"
+                element={
+                  <ProtectedRoute>
+                    <RoomSetup />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/add-expense"
+                element={
+                  <ProtectedRoute>
+                    <AddExpense />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/monthly-summary"
+                element={
+                  <ProtectedRoute>
+                    <MonthlySummary />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settlement"
+                element={
+                  <ProtectedRoute>
+                    <Settlement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/room-settings"
+                element={
+                  <ProtectedRoute>
+                    <RoomSettings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route // Added Help route
+                path="/help"
+                element={
+                  <ProtectedRoute>
+                    <Help />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+          <Toaster /> {/* Moved Toaster */}
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
-  </ThemeProvider>
-);
+  );
+}
 
 export default App;

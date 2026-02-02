@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -16,57 +17,97 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-
-const summaryData = [
-  {
-    id: "1",
-    name: "Rahul",
-    avatar: "R",
-    totalPaid: 4500,
-    totalShare: 2400,
-    balance: 2100,
-  },
-  {
-    id: "2",
-    name: "Amit",
-    avatar: "A",
-    totalPaid: 1800,
-    totalShare: 2400,
-    balance: -600,
-  },
-  {
-    id: "3",
-    name: "Priya",
-    avatar: "P",
-    totalPaid: 2400,
-    totalShare: 2400,
-    balance: 0,
-  },
-  {
-    id: "4",
-    name: "Sneha",
-    avatar: "S",
-    totalPaid: 900,
-    totalShare: 2400,
-    balance: -1500,
-  },
-];
-
-const expenseHistory = [
-  { id: 1, date: "Jan 30", description: "Groceries - Vegetables", amount: 450, paidBy: "Rahul", splitBetween: 4 },
-  { id: 2, date: "Jan 29", description: "Milk & Bread", amount: 180, paidBy: "Amit", splitBetween: 4 },
-  { id: 3, date: "Jan 28", description: "Dinner - Biryani", amount: 800, paidBy: "Priya", splitBetween: 3 },
-  { id: 4, date: "Jan 27", description: "Cooking Gas", amount: 950, paidBy: "Rahul", splitBetween: 4 },
-  { id: 5, date: "Jan 26", description: "Snacks & Drinks", amount: 320, paidBy: "Sneha", splitBetween: 4 },
-  { id: 6, date: "Jan 25", description: "Rice & Dal", amount: 680, paidBy: "Rahul", splitBetween: 4 },
-  { id: 7, date: "Jan 24", description: "Fruits", amount: 250, paidBy: "Priya", splitBetween: 2 },
-  { id: 8, date: "Jan 23", description: "Dinner - Pizza", amount: 1200, paidBy: "Amit", splitBetween: 4 },
-];
+import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { getExpensesByRoom, getRoomsByUser } from "@/services/api";
+import { format, startOfMonth } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { FileText } from "lucide-react";
 
 export default function MonthlySummary() {
-  const totalExpenses = summaryData.reduce((sum, m) => sum + m.totalPaid, 0);
+  const { user } = useAuth();
+  const [selectedMonth, setSelectedMonth] = useState<string>(startOfMonth(new Date()).toISOString());
+  const [viewImage, setViewImage] = useState<string | null>(null);
+
+  const getImageUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001'}${url}`;
+  };
+
+  // 1. Fetch Rooms (to get active room)
+  const { data: roomsData } = useQuery({
+    queryKey: ['rooms', user?.id],
+    queryFn: () => getRoomsByUser(user!.id),
+    enabled: !!user?.id,
+  });
+  const activeRoom = roomsData?.docs?.[0];
+
+  // 2. Fetch Expenses for Selected Month
+  const { data: expensesData, isLoading: expensesLoading } = useQuery({
+    queryKey: ['expenses', activeRoom?.id, selectedMonth],
+    queryFn: () => getExpensesByRoom(activeRoom.id, selectedMonth),
+    enabled: !!activeRoom?.id,
+  });
+
+  const expenses = expensesData?.docs || [];
+  const totalExpenses = expenses.reduce((sum: number, ex: any) => sum + ex.amount, 0);
+
+  // 3. Calculate Member Balances
+  const members = activeRoom?.members || [];
+  const memberStats = members.map((member: any) => {
+    // If member is just ID string, we can't show name easily unless populated. 
+    // API depth=1 should populate it.
+    const memberId = member.id || member;
+
+    let paid = 0;
+    let share = 0;
+
+    expenses.forEach((ex: any) => {
+      // Paid
+      if ((ex.paidBy.id || ex.paidBy) === memberId) {
+        paid += ex.amount;
+      }
+
+      // Share
+      const isPresent = ex.membersPresent.some((m: any) => (m.id || m) === memberId);
+      if (isPresent) {
+        share += ex.amount / ex.membersPresent.length;
+      }
+    });
+
+    return {
+      id: memberId,
+      name: member.name || "Unknown",
+      avatar: member.avatar || (member.name?.[0] || "?"),
+      totalPaid: paid,
+      totalShare: share,
+      balance: paid - share,
+    };
+  });
+
+  // Helper to generate month options
+  const getMonthOptions = () => {
+    const options = [];
+    for (let i = 0; i < 6; i++) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const start = startOfMonth(d); // Reset to 1st of month 00:00:00
+      options.push({
+        value: start.toISOString(),
+        label: format(start, 'MMMM yyyy')
+      });
+    }
+    return options;
+  };
 
   return (
     <DashboardLayout>
@@ -76,14 +117,19 @@ export default function MonthlySummary() {
           <h1 className="text-2xl font-bold text-foreground">Monthly Summary</h1>
           <p className="text-muted-foreground">Detailed breakdown of expenses</p>
         </div>
-        <Select defaultValue="jan-2026">
+        <Select
+          value={selectedMonth}
+          onValueChange={setSelectedMonth}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select month" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="jan-2026">January 2026</SelectItem>
-            <SelectItem value="dec-2025">December 2025</SelectItem>
-            <SelectItem value="nov-2025">November 2025</SelectItem>
+            {getMonthOptions().map(opt => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -91,9 +137,11 @@ export default function MonthlySummary() {
       {/* Total Card */}
       <Card className="p-6 mb-6 gradient-primary text-primary-foreground shadow-card">
         <div className="text-center">
-          <p className="text-primary-foreground/80 mb-1">Total Expenses This Month</p>
+          <p className="text-primary-foreground/80 mb-1">Total Expenses</p>
           <p className="text-4xl font-bold">₹{totalExpenses.toLocaleString()}</p>
-          <p className="text-primary-foreground/80 mt-2">Split between 4 members</p>
+          <p className="text-primary-foreground/80 mt-2">
+            Split between {members.length} members
+          </p>
         </div>
       </Card>
 
@@ -112,7 +160,7 @@ export default function MonthlySummary() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {summaryData.map((member) => (
+              {memberStats.map((member: any) => (
                 <TableRow key={member.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -125,36 +173,36 @@ export default function MonthlySummary() {
                     </div>
                   </TableCell>
                   <TableCell className="text-right font-medium">
-                    ₹{member.totalPaid.toLocaleString()}
+                    ₹{member.totalPaid.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </TableCell>
                   <TableCell className="text-right text-muted-foreground">
-                    ₹{member.totalShare.toLocaleString()}
+                    ₹{member.totalShare.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </TableCell>
                   <TableCell
                     className={cn(
                       "text-right font-semibold",
                       member.balance > 0 && "text-success",
                       member.balance < 0 && "text-destructive",
-                      member.balance === 0 && "text-muted-foreground"
+                      Math.abs(member.balance) < 1 && "text-muted-foreground"
                     )}
                   >
-                    {member.balance > 0 && "+"}₹{Math.abs(member.balance).toLocaleString()}
+                    {member.balance > 0 && "+"}₹{Math.abs(member.balance).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </TableCell>
                   <TableCell className="text-right">
                     <Badge
                       variant={
-                        member.balance > 0
+                        member.balance > 10
                           ? "default"
-                          : member.balance < 0
-                          ? "destructive"
-                          : "secondary"
+                          : member.balance < -10
+                            ? "destructive"
+                            : "secondary"
                       }
                       className={cn(
-                        member.balance > 0 && "bg-success text-success-foreground",
-                        member.balance === 0 && "bg-muted text-muted-foreground"
+                        member.balance > 10 && "bg-success text-success-foreground",
+                        Math.abs(member.balance) <= 10 && "bg-muted text-muted-foreground"
                       )}
                     >
-                      {member.balance > 0 ? "Gets back" : member.balance < 0 ? "Owes" : "Settled"}
+                      {member.balance > 10 ? "Gets back" : member.balance < -10 ? "Owes" : "Settled"}
                     </Badge>
                   </TableCell>
                 </TableRow>
@@ -176,26 +224,64 @@ export default function MonthlySummary() {
                 <TableHead>Paid By</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
                 <TableHead className="text-right">Split</TableHead>
+                <TableHead className="text-right">Receipt</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {expenseHistory.map((expense) => (
-                <TableRow key={expense.id}>
-                  <TableCell className="text-muted-foreground">{expense.date}</TableCell>
-                  <TableCell className="font-medium">{expense.description}</TableCell>
-                  <TableCell>{expense.paidBy}</TableCell>
-                  <TableCell className="text-right font-medium">
-                    ₹{expense.amount.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {expense.splitBetween} people
+              {expenses.length > 0 ? (
+                expenses.map((expense: any) => (
+                  <TableRow key={expense.id}>
+                    <TableCell className="text-muted-foreground">
+                      {format(new Date(expense.date), "MMM d")}
+                    </TableCell>
+                    <TableCell className="font-medium">{expense.description}</TableCell>
+                    <TableCell>{expense.paidBy?.name || "Unknown"}</TableCell>
+                    <TableCell className="text-right font-medium">
+                      ₹{expense.amount.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-right text-muted-foreground">
+                      {expense.membersPresent?.length || 0} people
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {expense.billImage && expense.billImage.url && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setViewImage(getImageUrl(expense.billImage.url))}
+                        >
+                          <FileText className="w-4 h-4 text-primary" />
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
+                    No expenses found for this month.
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>
       </Card>
+      <Dialog open={!!viewImage} onOpenChange={() => setViewImage(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-auto">
+          <DialogHeader>
+            <DialogTitle>Receipt View</DialogTitle>
+          </DialogHeader>
+          <div className="flex justify-center p-4">
+            {viewImage && (
+              <img
+                src={viewImage}
+                alt="Receipt"
+                className="max-w-full h-auto rounded-lg shadow-sm"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }

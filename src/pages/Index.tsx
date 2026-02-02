@@ -55,19 +55,19 @@ export default function Index() {
             <CheckCircle className="w-4 h-4" />
             Free for PG & Hostel residents
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight animate-fade-in">
             Split shared expenses
-            <span className="block gradient-primary bg-clip-text text-transparent">
+            <span className="block gradient-primary bg-clip-text text-transparent text-black">
               without the headache
             </span>
           </h1>
-          
+
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in">
-            MessMate helps PG and hostel residents track daily food costs, upload bills, 
+            MessMate helps PG and hostel residents track daily food costs, upload bills,
             and automatically calculate who owes what at month-end.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in">
             <Button asChild size="lg" className="h-12 px-8 gradient-primary border-0 text-base">
               <Link to="/signup">Start for Free</Link>

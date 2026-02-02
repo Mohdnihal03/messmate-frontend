@@ -11,11 +11,15 @@ import {
   X,
   Sun,
   Moon,
+  HelpCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useTheme } from "next-themes";
+import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { getRoomsByUser } from "@/services/api";
 
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -23,12 +27,23 @@ const navItems = [
   { title: "Monthly Summary", url: "/monthly-summary", icon: CalendarDays },
   { title: "Settlement", url: "/settlement", icon: ArrowLeftRight },
   { title: "Room Settings", url: "/room-settings", icon: Settings },
+  { title: "Help & Guide", url: "/help", icon: HelpCircle },
 ];
 
 export function AppSidebar() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+
+  const { user } = useAuth();
+
+  // Fetch Room Info
+  const { data: roomsData } = useQuery({
+    queryKey: ['rooms', user?.id],
+    queryFn: () => getRoomsByUser(user!.id),
+    enabled: !!user?.id,
+  });
+  const activeRoom = roomsData?.docs?.[0];
 
   const isActive = (path: string) => location.pathname === path;
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
@@ -71,8 +86,8 @@ export function AppSidebar() {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="h-16 flex items-center gap-3 px-6 border-b">
-            <div className="w-9 h-9 gradient-primary rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-primary-foreground" />
+            <div className="w-9 h-9 gradient-primary rounded-lg flex items-center justify-center overflow-hidden">
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
             </div>
             <span className="font-bold text-lg text-foreground">MessMate</span>
           </div>
@@ -104,8 +119,12 @@ export function AppSidebar() {
           <div className="p-4 border-t">
             <div className="bg-accent/50 rounded-lg p-3">
               <p className="text-xs text-muted-foreground mb-1">Current Room</p>
-              <p className="font-medium text-sm text-foreground">Sunrise PG - Room 204</p>
-              <p className="text-xs text-muted-foreground mt-1">4 members</p>
+              <p className="font-medium text-sm text-foreground truncate">
+                {activeRoom?.name || "No Room Selected"}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {activeRoom?.members?.length || 0} members
+              </p>
             </div>
           </div>
 

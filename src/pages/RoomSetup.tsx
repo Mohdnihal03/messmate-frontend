@@ -1,12 +1,73 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Users, Plus, KeyRound } from "lucide-react";
+import { createRoom, joinRoom } from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 export default function RoomSetup() {
   const [mode, setMode] = useState<"choose" | "create" | "join">("choose");
+  const [roomName, setRoomName] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { user, refetchUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleCreateRoom = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!roomName) {
+      toast.error("Please enter a room name");
+      return;
+    }
+
+    if (!user) {
+      toast.error("You must be logged in to create a room");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await createRoom(roomName, user.id);
+      await refetchUser(); // Refresh user to update rooms list
+      toast.success("Room created successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Create room error:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to create room");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleJoinRoom = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inviteCode) {
+      toast.error("Please enter an invite code");
+      return;
+    }
+
+    if (!user) {
+      toast.error("You must be logged in to join a room");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await joinRoom(inviteCode.trim(), user.id);
+      await refetchUser(); // Refresh user to update rooms list
+      toast.success("Joined room successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Join room error:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to join room. Check the code.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
@@ -81,7 +142,7 @@ export default function RoomSetup() {
               Set up your room and invite your roommates
             </p>
 
-            <form className="space-y-5">
+            <form onSubmit={handleCreateRoom} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="roomName">Room Name</Label>
                 <Input
@@ -89,11 +150,14 @@ export default function RoomSetup() {
                   type="text"
                   placeholder="e.g., Sunrise PG - Room 204"
                   className="h-11"
+                  value={roomName}
+                  onChange={(e) => setRoomName(e.target.value)}
+                  disabled={loading}
                 />
               </div>
 
-              <Button asChild className="w-full h-11 gradient-primary border-0">
-                <Link to="/dashboard">Create Room</Link>
+              <Button type="submit" className="w-full h-11 gradient-primary border-0" disabled={loading}>
+                {loading ? "Creating..." : "Create Room"}
               </Button>
             </form>
           </div>
@@ -114,7 +178,7 @@ export default function RoomSetup() {
               Enter the invite code shared by your roommate
             </p>
 
-            <form className="space-y-5">
+            <form onSubmit={handleJoinRoom} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="inviteCode">Invite Code</Label>
                 <Input
@@ -122,11 +186,14 @@ export default function RoomSetup() {
                   type="text"
                   placeholder="e.g., ABC123"
                   className="h-11 uppercase tracking-widest text-center font-mono"
+                  value={inviteCode}
+                  onChange={(e) => setInviteCode(e.target.value)}
+                  disabled={loading}
                 />
               </div>
 
-              <Button asChild className="w-full h-11 gradient-primary border-0">
-                <Link to="/dashboard">Join Room</Link>
+              <Button type="submit" className="w-full h-11 gradient-primary border-0" disabled={loading}>
+                {loading ? "Joining..." : "Join Room"}
               </Button>
             </form>
           </div>
