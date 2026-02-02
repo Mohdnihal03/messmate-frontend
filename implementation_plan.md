@@ -1,10 +1,10 @@
-# MessMate Payload CMS Backend - Implementation Plan
+# MessBro Payload CMS Backend - Implementation Plan
 
-A structured plan to build and deploy the Payload CMS backend for MessMate.
+A structured plan to build and deploy the Payload CMS backend for MessBro.
 
 ## Overview
 
-This plan will guide you through creating a complete Payload CMS backend that integrates with your existing MessMate frontend, providing authentication, data management, and file uploads, all deployable to Vercel.
+This plan will guide you through creating a complete Payload CMS backend that integrates with your existing MessBro frontend, providing authentication, data management, and file uploads, all deployable to Vercel.
 
 ---
 
@@ -12,10 +12,10 @@ This plan will guide you through creating a complete Payload CMS backend that in
 
 ### 1.1 Create Payload CMS Project
 
-**Location**: `c:\Users\moham\Documents\messmate-backend`
+**Location**: `c:\Users\moham\Documents\MessBro-backend`
 
 **Steps**:
-1. Run `npx create-payload-app@latest messmate-backend`
+1. Run `npx create-payload-app@latest MessBro-backend`
 2. Choose template: **blank**
 3. Choose database: **MongoDB**
 4. Package manager: **npm**
@@ -26,11 +26,11 @@ This plan will guide you through creating a complete Payload CMS backend that in
 
 ### 1.2 Configure Environment Variables
 
-**File**: `messmate-backend\.env`
+**File**: `MessBro-backend\.env`
 
 **Required Variables**:
 ```env
-DATABASE_URI=mongodb://localhost:27017/messmate
+DATABASE_URI=mongodb://localhost:27017/MessBro
 PAYLOAD_SECRET=your-super-secret-key-change-this-in-production
 PORT=3001
 CORS_ORIGINS=http://localhost:5173
@@ -45,7 +45,7 @@ PAYLOAD_PUBLIC_SERVER_URL=http://localhost:3001
 ### 1.3 Install Additional Dependencies
 
 ```bash
-cd messmate-backend
+cd MessBro-backend
 npm install dotenv cross-env
 ```
 
@@ -55,7 +55,7 @@ npm install dotenv cross-env
 
 ### 2.1 Users Collection
 
-**File**: [NEW] [Users.ts](file:///c:/Users/moham/Documents/messmate-backend/src/collections/Users.ts)
+**File**: [NEW] [Users.ts](file:///c:/Users/moham/Documents/MessBro-backend/src/collections/Users.ts)
 
 **Features**:
 - Built-in authentication
@@ -72,7 +72,7 @@ npm install dotenv cross-env
 
 ### 2.2 Rooms Collection
 
-**File**: [NEW] [Rooms.ts](file:///c:/Users/moham/Documents/messmate-backend/src/collections/Rooms.ts)
+**File**: [NEW] [Rooms.ts](file:///c:/Users/moham/Documents/MessBro-backend/src/collections/Rooms.ts)
 
 **Features**:
 - Room name
@@ -87,7 +87,7 @@ npm install dotenv cross-env
 
 ### 2.3 Expenses Collection
 
-**File**: [NEW] [Expenses.ts](file:///c:/Users/moham/Documents/messmate-backend/src/collections/Expenses.ts)
+**File**: [NEW] [Expenses.ts](file:///c:/Users/moham/Documents/MessBro-backend/src/collections/Expenses.ts)
 
 **Features**:
 - Amount, description, date
@@ -105,7 +105,7 @@ npm install dotenv cross-env
 
 ### 2.4 Settlements Collection
 
-**File**: [NEW] [Settlements.ts](file:///c:/Users/moham/Documents/messmate-backend/src/collections/Settlements.ts)
+**File**: [NEW] [Settlements.ts](file:///c:/Users/moham/Documents/MessBro-backend/src/collections/Settlements.ts)
 
 **Features**:
 - From/To user relationships
@@ -118,7 +118,7 @@ npm install dotenv cross-env
 
 ### 2.5 Media Collection
 
-**File**: [NEW] [Media.ts](file:///c:/Users/moham/Documents/messmate-backend/src/collections/Media.ts)
+**File**: [NEW] [Media.ts](file:///c:/Users/moham/Documents/MessBro-backend/src/collections/Media.ts)
 
 **Features**:
 - File upload handling
@@ -130,7 +130,7 @@ npm install dotenv cross-env
 
 ### 2.6 Update Payload Config
 
-**File**: [MODIFY] [payload.config.ts](file:///c:/Users/moham/Documents/messmate-backend/src/payload.config.ts)
+**File**: [MODIFY] [payload.config.ts](file:///c:/Users/moham/Documents/MessBro-backend/src/payload.config.ts)
 
 **Changes**:
 - Import all collections
@@ -145,7 +145,7 @@ npm install dotenv cross-env
 
 ### 3.1 Create API Service Layer
 
-**File**: [NEW] [api.ts](file:///c:/Users/moham/Documents/messmate-frontend/src/services/api.ts)
+**File**: [NEW] [api.ts](file:///c:/Users/moham/Documents/MessBro-frontend/src/services/api.ts)
 
 **Functions to Implement**:
 
@@ -177,7 +177,7 @@ npm install dotenv cross-env
 
 ### 3.2 Create Auth Context
 
-**File**: [NEW] [AuthContext.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/contexts/AuthContext.tsx)
+**File**: [NEW] [AuthContext.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/contexts/AuthContext.tsx)
 
 **Purpose**: Manage authentication state globally
 
@@ -193,7 +193,7 @@ npm install dotenv cross-env
 ### 3.3 Update Frontend Pages
 
 #### Login Page
-**File**: [MODIFY] [Login.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/pages/Login.tsx)
+**File**: [MODIFY] [Login.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/pages/Login.tsx)
 
 **Changes**:
 - Connect form to `login()` API
@@ -204,7 +204,7 @@ npm install dotenv cross-env
 ---
 
 #### Signup Page
-**File**: [MODIFY] [Signup.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/pages/Signup.tsx)
+**File**: [MODIFY] [Signup.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/pages/Signup.tsx)
 
 **Changes**:
 - Connect form to `signup()` API
@@ -215,7 +215,7 @@ npm install dotenv cross-env
 ---
 
 #### Room Setup Page
-**File**: [MODIFY] [RoomSetup.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/pages/RoomSetup.tsx)
+**File**: [MODIFY] [RoomSetup.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/pages/RoomSetup.tsx)
 
 **Changes**:
 - Create room: Call `createRoom()` API
@@ -225,7 +225,7 @@ npm install dotenv cross-env
 ---
 
 #### Dashboard Page
-**File**: [MODIFY] [Dashboard.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/pages/Dashboard.tsx)
+**File**: [MODIFY] [Dashboard.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/pages/Dashboard.tsx)
 
 **Changes**:
 - Fetch current user's room
@@ -236,7 +236,7 @@ npm install dotenv cross-env
 ---
 
 #### Add Expense Page
-**File**: [MODIFY] [AddExpense.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/pages/AddExpense.tsx)
+**File**: [MODIFY] [AddExpense.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/pages/AddExpense.tsx)
 
 **Changes**:
 - Upload bill image first (if provided)
@@ -247,7 +247,7 @@ npm install dotenv cross-env
 ---
 
 #### Monthly Summary Page
-**File**: [MODIFY] [MonthlySummary.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/pages/MonthlySummary.tsx)
+**File**: [MODIFY] [MonthlySummary.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/pages/MonthlySummary.tsx)
 
 **Changes**:
 - Fetch expenses for selected month
@@ -258,7 +258,7 @@ npm install dotenv cross-env
 ---
 
 #### Settlement Page
-**File**: [MODIFY] [Settlement.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/pages/Settlement.tsx)
+**File**: [MODIFY] [Settlement.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/pages/Settlement.tsx)
 
 **Changes**:
 - Fetch settlements for current room
@@ -269,7 +269,7 @@ npm install dotenv cross-env
 ---
 
 #### Room Settings Page
-**File**: [MODIFY] [RoomSettings.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/pages/RoomSettings.tsx)
+**File**: [MODIFY] [RoomSettings.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/pages/RoomSettings.tsx)
 
 **Changes**:
 - Fetch current room data
@@ -281,7 +281,7 @@ npm install dotenv cross-env
 
 ### 3.4 Add Protected Routes
 
-**File**: [MODIFY] [App.tsx](file:///c:/Users/moham/Documents/messmate-frontend/src/App.tsx)
+**File**: [MODIFY] [App.tsx](file:///c:/Users/moham/Documents/MessBro-frontend/src/App.tsx)
 
 **Changes**:
 - Wrap app with AuthContext

@@ -1,10 +1,10 @@
-# MessMate Project Guide: Structure & Working
+# MessBro Project Guide: Structure & Working
 
-This guide explains how the MessMate application is structured and how the frontend and backend work together.
+This guide explains how the MessBro application is structured and how the frontend and backend work together.
 
 ## 🏗️ high-Level Architecture
 
-MessMate is a full-stack web application built with:
+MessBro is a full-stack web application built with:
 - **Frontend**: React + Vite (Port 5173) for the user interface.
 - **Backend**: Payload CMS + Next.js (Port 3001) for API and data management.
 - **Database**: MongoDB (Local or Atlas) for storing data.
@@ -15,11 +15,11 @@ The frontend communicates with the backend via REST APIs using JWT authenticatio
 
 ## 📂 Project Structure
 
-### 1. Root Directory (`messmate-frontend/`)
+### 1. Root Directory (`MessBro-frontend/`)
 This contains the **Frontend** code.
 
 ```bash
-messmate-frontend/
+MessBro-frontend/
 ├── src/
 │   ├── components/       # Reusable UI components (Buttons, Cards, Layouts)
 │   ├── contexts/         # Global state (AuthContext.tsx)
@@ -32,7 +32,7 @@ messmate-frontend/
 └── package.json          # Frontend dependencies
 ```
 
-### 2. Backend Directory (`messmate-frontend/backend/`)
+### 2. Backend Directory (`MessBro-frontend/backend/`)
 This contains the **Payload CMS** code.
 
 ```bash
@@ -113,7 +113,7 @@ npm run dev
 ### 2. Start the Frontend
 Open a **new** terminal (keep backend running):
 ```bash
-# In the root folder (messmate-frontend)
+# In the root folder (MessBro-frontend)
 npm run dev
 # Runs on http://localhost:5173
 ```

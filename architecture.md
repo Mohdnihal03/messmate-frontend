@@ -1,4 +1,4 @@
-# MessMate Frontend-Backend Integration Architecture
+# MessBro Frontend-Backend Integration Architecture
 
 This document explains how your React frontend will communicate with the Payload CMS backend.
 
@@ -586,7 +586,7 @@ const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
 
 **Using Thunder Client (VS Code Extension)**:
 1. Install Thunder Client
-2. Create collection "MessMate API"
+2. Create collection "MessBro API"
 3. Add requests for each endpoint
 4. Save token as environment variable
 5. Test all CRUD operations

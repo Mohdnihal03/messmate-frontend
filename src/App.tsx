@@ -23,7 +23,7 @@ const queryClient = new QueryClient();
 function App() { // Changed to function declaration
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="messmate-theme"> {/* Changed ThemeProvider props */}
+      <ThemeProvider defaultTheme="light" storageKey="MessBro-theme"> {/* Changed ThemeProvider props */}
         <AuthProvider>
           <BrowserRouter>
             <Routes>

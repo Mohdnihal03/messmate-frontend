@@ -50,7 +50,7 @@ export default function Signup() {
             <Users className="w-10 h-10 text-primary-foreground" />
           </div>
           <h2 className="text-3xl font-bold mb-4">
-            Join MessMate today
+            Join MessBro today
           </h2>
           <p className="text-primary-foreground/80 text-lg">
             Create or join a room and start tracking shared expenses with ease.
@@ -66,7 +66,7 @@ export default function Signup() {
             <div className="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
               <Users className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl text-foreground">MessMate</span>
+            <span className="font-bold text-xl text-foreground">MessBro</span>
           </div>
 
           {/* Header */}

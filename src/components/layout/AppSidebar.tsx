@@ -56,7 +56,7 @@ export function AppSidebar() {
           <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
             <Users className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="font-semibold text-foreground">MessMate</span>
+          <span className="font-semibold text-foreground">MessBro</span>
         </Link>
         <Button
           variant="ghost"
@@ -89,7 +89,7 @@ export function AppSidebar() {
             <div className="w-9 h-9 gradient-primary rounded-lg flex items-center justify-center overflow-hidden">
               <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="font-bold text-lg text-foreground">MessMate</span>
+            <span className="font-bold text-lg text-foreground">MessBro</span>
           </div>
 
           {/* Navigation */}

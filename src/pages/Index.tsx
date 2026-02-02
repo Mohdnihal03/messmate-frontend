@@ -35,7 +35,7 @@ export default function Index() {
             <div className="w-9 h-9 gradient-primary rounded-lg flex items-center justify-center">
               <Users className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-lg text-foreground">MessMate</span>
+            <span className="font-bold text-lg text-foreground">MessBro</span>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="ghost" asChild>
@@ -58,13 +58,13 @@ export default function Index() {
 
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight animate-fade-in">
             Split shared expenses
-            <span className="block gradient-primary bg-clip-text text-transparent text-black">
+            <span className="block gradient-primary bg-clip-text text-black">
               without the headache
             </span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in">
-            MessMate helps PG and hostel residents track daily food costs, upload bills,
+            MessBro helps PG and hostel residents track daily food costs, upload bills,
             and automatically calculate who owes what at month-end.
           </p>
 
@@ -129,7 +129,7 @@ export default function Index() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t">
         <div className="container mx-auto text-center text-sm text-muted-foreground">
-          <p>© 2026 MessMate. Built for shared living, made simple.</p>
+          <p>© 2026 MessBro. Built for shared living, made simple. @Mohammed Nihal</p>
         </div>
       </footer>
     </div>

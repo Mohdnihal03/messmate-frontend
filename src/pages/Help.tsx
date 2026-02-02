@@ -14,7 +14,7 @@ export default function Help() {
     return (
         <DashboardLayout>
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-foreground">How to use MessMate</h1>
+                <h1 className="text-2xl font-bold text-foreground">How to use MessBro</h1>
                 <p className="text-muted-foreground">Quick guide to managing your shared expenses</p>
             </div>
 
@@ -54,7 +54,7 @@ export default function Help() {
                         <div>
                             <h3 className="text-xl font-semibold mb-2">2. Adding Expenses</h3>
                             <p className="text-muted-foreground mb-4">
-                                Whenever you buy something for the room (groceries, food, bills), add it to MessMate.
+                                Whenever you buy something for the room (groceries, food, bills), add it to MessBro.
                             </p>
                             <ul className="space-y-3 text-muted-foreground">
                                 <li className="flex items-start gap-2">

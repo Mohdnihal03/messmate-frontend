@@ -1,11 +1,11 @@
-# MessMate Payload CMS Backend Guide
+# MessBro Payload CMS Backend Guide
 
-> A comprehensive guide to building a backend for MessMate using Payload CMS
+> A comprehensive guide to building a backend for MessBro using Payload CMS
 
 ## Table of Contents
 1. [What is Payload CMS?](#what-is-payload-cms)
-2. [Why Payload CMS for MessMate?](#why-payload-cms-for-messmate)
-3. [Understanding the MessMate Data Model](#understanding-the-messmate-data-model)
+2. [Why Payload CMS for MessBro?](#why-payload-cms-for-MessBro)
+3. [Understanding the MessBro Data Model](#understanding-the-MessBro-data-model)
 4. [Setting Up Payload CMS](#setting-up-payload-cms)
 5. [Creating Collections](#creating-collections)
 6. [Authentication & Authorization](#authentication--authorization)
@@ -58,7 +58,7 @@ Define who can read/write data based on user roles and conditions.
 
 ---
 
-## Why Payload CMS for MessMate?
+## Why Payload CMS for MessBro?
 
 ✅ **Easy Vercel Deployment** - Payload works seamlessly with Vercel  
 ✅ **Auto-generated APIs** - No need to write CRUD endpoints manually  
@@ -66,11 +66,11 @@ Define who can read/write data based on user roles and conditions.
 ✅ **File Uploads** - Perfect for bill image uploads  
 ✅ **TypeScript** - Type safety for your backend  
 ✅ **Admin Panel** - Manage data without writing admin UI  
-✅ **Flexible** - Easy to customize for MessMate's needs  
+✅ **Flexible** - Easy to customize for MessBro's needs  
 
 ---
 
-## Understanding the MessMate Data Model
+## Understanding the MessBro Data Model
 
 Based on your frontend, here's what we need:
 
@@ -132,7 +132,7 @@ erDiagram
 cd c:\Users\moham\Documents
 
 # Create a new Payload project
-npx create-payload-app@latest messmate-backend
+npx create-payload-app@latest MessBro-backend
 
 # Follow the prompts:
 # - Template: blank
@@ -145,7 +145,7 @@ npx create-payload-app@latest messmate-backend
 After creation, you'll have:
 
 ```
-messmate-backend/
+MessBro-backend/
 ├── src/
 │   ├── collections/        # Your data models
 │   ├── payload.config.ts   # Main configuration
@@ -161,9 +161,9 @@ Edit `.env`:
 
 ```env
 # Database
-DATABASE_URI=mongodb://localhost:27017/messmate
+DATABASE_URI=mongodb://localhost:27017/MessBro
 # Or use MongoDB Atlas for cloud database
-# DATABASE_URI=mongodb+srv://username:password@cluster.mongodb.net/messmate
+# DATABASE_URI=mongodb+srv://username:password@cluster.mongodb.net/MessBro
 
 # Payload
 PAYLOAD_SECRET=your-secret-key-here-make-it-long-and-random
